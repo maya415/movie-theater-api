@@ -35,9 +35,9 @@ const seed = async () => {
 }
 
 
-// seed();
+seed();
 
-console.log(__dirname);
+// console.log(__dirname);
 //__dirname will give the folder that the currently executing file is found in
 
 
