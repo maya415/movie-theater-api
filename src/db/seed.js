@@ -35,7 +35,7 @@ const seed = async () => {
 }
 
 
-seed();
+
 
 // console.log(__dirname);
 //__dirname will give the folder that the currently executing file is found in
@@ -43,3 +43,4 @@ seed();
 
 //export my seed function
 module.exports = seed;
+//the seed function will create the db and fill it
