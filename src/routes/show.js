@@ -1,7 +1,9 @@
 const { User, Show } = require('../models');
 const {Router} = require('express');
 const {checkShowExistsByShowName, checkShowExistsById, checkUserExistsById, checkUserExistsByUsername} = require('./middleware');
+const { body, validationResult } = require('express-validator');
 const showRouter = Router();
+
 
 //get all shows
 showRouter.get('/allshows', async (req,res)=>{
@@ -38,11 +40,9 @@ showRouter.get('/:genre', async (req,res)=>{
 })
 
 //update rating by showname
-showRouter.put('/:showName/:rating',checkShowExistsByShowName, async (req,res) =>{
+showRouter.put('changeRatingByShowName/:showName',checkShowExistsByShowName, async (req,res) =>{
     try {
-        const updated = await req.show.update({where: {
-            rating: req.params.rating
-        }})
+        const updated = await req.show.update(req.body)
         res.status(200).send({updated})
         
     } catch {
@@ -51,11 +51,9 @@ showRouter.put('/:showName/:rating',checkShowExistsByShowName, async (req,res) =
 })
 
 //update rating by show id
-showRouter.put('/:id/:rating',checkShowExistsById, async (req,res) =>{
+showRouter.put('changeRatingById/:id',checkShowExistsById, async (req,res) =>{
     try {
-        const updated = await req.show.update({where: {
-            rating: req.params.rating
-        }})
+        const updated = await req.show.update(req.body)
         res.status(200).send({updated})
         
     } catch {
@@ -64,11 +62,15 @@ showRouter.put('/:id/:rating',checkShowExistsById, async (req,res) =>{
 });
 
 //update status by showname
-showRouter.put('/:showName/:status',checkShowExistsByShowName, async (req,res) =>{
+showRouter.put('changeStatusByShowName/:showName',
+body('status').isLength({min:5}, {max:25}),
+checkShowExistsByShowName, async (req,res) =>{
+    const errors = validationResult(req);
+    if (!errors.isEmpty){
+        return res.status(400).send({errors: errors.array()})
+    }
     try {
-        const updated = await req.show.update({where: {
-            status: req.params.status
-        }})
+        const updated = await req.show.update(req.body)
         res.status(200).send({updated})
         
     } catch {
@@ -77,11 +79,15 @@ showRouter.put('/:showName/:status',checkShowExistsByShowName, async (req,res) =
 });
 
 //update status by show id
-showRouter.put('/:id/:rating',checkShowExistsById, async (req,res) =>{
+showRouter.put('changeStatusById/:id/',
+body('status').isLength({min:5}, {max:25}),
+checkShowExistsById, async (req,res) =>{
+    const errors = validationResult(req);
+    if (!errors.isEmpty){
+        return res.status(400).send({errors: errors.array()})
+    }
     try {
-        const updated = await req.show.update({where: {
-            status: req.params.status
-        }})
+        const updated = await req.show.update(req.body)
         res.status(200).send({updated})
         
     } catch {
@@ -90,13 +96,13 @@ showRouter.put('/:id/:rating',checkShowExistsById, async (req,res) =>{
 });
 
 //delete show by showname
-showRouter.delete('/:showName'. checkShowExistsByShowName, async(req,res)=>{
+showRouter.delete('name/:showName',checkShowExistsByShowName, async(req,res)=>{
     await req.show.destroy();
     res.status(200).send({show: req.show});
 });
 
 //delete show by show id
-showRouter.delete('/:id'. checkShowExistsById, async(req,res)=>{
+showRouter.delete('id/:id'. checkShowExistsById, async(req,res)=>{
     await req.show.destroy();
     res.status(200).send({show: req.show});
 });

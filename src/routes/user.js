@@ -32,8 +32,8 @@ userRouter.get('/:id',checkUserExistsById, async (req,res) =>{
 
 //update by adding show to user
 //check if show in Shows, if not send message to add show first
-userRouter.put('/:id/:showName',checkUserExistsById, checkShowExistsByShowName, async (req,res) => {
-            const userWithShows = await req.user.addShow(req.show);
+userRouter.put('/:id',checkUserExistsById, async (req,res) => {
+            const userWithShows = await req.user.addShow(req.body);
             res.status(200).send({userWithShows})
 })
 
